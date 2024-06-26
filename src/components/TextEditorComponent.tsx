@@ -18,7 +18,7 @@ export function TextEditorComponent() {
     (val: EditorValueType) => {
       dispatch(addValue(val));
     },
-    1500
+    900
   );
 
   const handleChange = (key: keyof EditorValueType, val: string | boolean) => {
