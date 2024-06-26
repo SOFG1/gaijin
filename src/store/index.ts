@@ -7,7 +7,6 @@ const persistedTextEditorReducer = persistReducer(
   {
     key: "textEditor",
     storage,
-    whitelist: ["value"],
   },
   textEditorReducer
 );

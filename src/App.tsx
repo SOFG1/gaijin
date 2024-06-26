@@ -1,15 +1,26 @@
 import { useDispatch, useSelector } from "react-redux";
 import { textEditorValueSelector } from "./store/textEditor/selectors";
-import { setValue } from "./store/textEditor/slice";
+import { setValues } from "./store/textEditor/slice";
+import { useEffect, useState } from "react";
+import { useDebounce } from "./hooks/useDebounce";
 
 function App() {
-  const value = useSelector(textEditorValueSelector);
-
   const dispatch = useDispatch();
+  const values = useSelector(textEditorValueSelector);
+  const [value, setValue] = useState("");
 
-  const handleChange = (value: string) => {
-    dispatch(setValue(value));
+  const setValueDebounced = useDebounce((val: string) => {
+     dispatch(setValues(val));
+  }, 1000);
+
+  const handleChange = (val: string) => {
+    setValue(val);
+    setValueDebounced(val);
   };
+
+  useEffect(() => {
+    setValue(values[values.length - 1] || "")
+  }, [values])
 
   return (
     <>

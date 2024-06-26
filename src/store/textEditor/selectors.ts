@@ -1,4 +1,4 @@
 import { RootStateType } from "..";
 
 
-export const textEditorValueSelector = (state: RootStateType): string => state.textEditor.value
+export const textEditorValueSelector = (state: RootStateType): string[] => state.textEditor.values

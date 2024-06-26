@@ -1,3 +1,3 @@
 export interface ITextEditorState {
-    value: string
+    values: string[]
 }
