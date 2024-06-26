@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://sofg1.github.io/gaijin",
   "scripts": {
     "dev": "start http://localhost:5173 && vite",
     "build": "tsc && vite build",
