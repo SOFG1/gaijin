@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { EditorValueType, ITextEditorState } from "./types";
 
-const cacheSize = 10; //Maximum cached values
+const cacheSize = 20; //Maximum cached values
 
 const initialValue: EditorValueType = {
   text: "",
