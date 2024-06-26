@@ -6,55 +6,58 @@ import {
 import { addValue, setActualIndex } from "./store/textEditor/slice";
 import { useEffect, useState } from "react";
 import { useDebounce } from "./hooks/useDebounce";
+import { EditorValueType } from "./store/textEditor/types";
+import { compareEditorValues } from "./utils/compareEditorValues";
 
 function App() {
   const dispatch = useDispatch();
   const values = useSelector(textEditorValuesSelector);
   const actualIndex = useSelector(textEditorActualIndexSelector);
-  const [value, setValue] = useState("");
-  const [bold, setBold] = useState<boolean>(false);
-  const [italic, setItalic] = useState<boolean>(false);
-
   const currentValue = values[actualIndex];
+  const [value, setValue] = useState<EditorValueType>(currentValue);
 
   const setValueDebounced = useDebounce(
-    (val: string, b: boolean, i: boolean) => {
-      dispatch(addValue({ text: val, bold: b, italic: i }));
+    (val: EditorValueType) => {
+      dispatch(addValue(val));
     },
-    1000
+    1500
   );
 
-  const handleChange = (val: string, b: boolean, i: boolean) => {
-    setValue(val);
-    setBold(b);
-    setItalic(i);
-    setValueDebounced(val, b, i);
+  const handleChange = (key: keyof EditorValueType, val: string | boolean) => {
+    setValue((p) => {
+      const newVal = { ...p, [key]: val };
+      setValueDebounced(newVal);
+      return newVal;
+    });
   };
 
   const handleChangeIndex = (index: number) => {
     dispatch(setActualIndex(index));
   };
 
+
   useEffect(() => {
-    setValue(currentValue?.text || "");
-    setItalic(currentValue?.italic || false);
-    setBold(currentValue?.bold || false);
-  }, [currentValue]);
+    setValue(p => {
+      const isDifferent = compareEditorValues(p, currentValue)
+      if(isDifferent) return currentValue
+      return p
+    })
+  }, [currentValue])
 
   return (
     <>
       <h1>Text editor</h1>
       <textarea
-        value={value}
-        onChange={(e) => handleChange(e.target.value, bold, italic)}
+        value={value.text}
+        onChange={(e) => handleChange("text", e.target.value)}
         style={{
           display: "block",
           minHeight: "120px",
           minWidth: "350px",
           fontFamily: "sans-serif",
           fontSize: "20px",
-          fontStyle: italic ? "italic" : "normal",
-          fontWeight: bold ? "bold" : "normal",
+          fontStyle: value.italic ? "italic" : "normal",
+          fontWeight: value.bold ? "bold" : "normal",
         }}
       />
       <button
@@ -69,8 +72,8 @@ function App() {
       >
         Redo
       </button>
-      <button onClick={() => handleChange(value, !bold, italic)}>Bold</button>
-      <button onClick={() => handleChange(value, bold, !italic)}>Italic</button>
+      <button onClick={() => handleChange("bold", !value.bold)}>Bold</button>
+      <button onClick={() => handleChange("italic", !value.italic)}>Italic</button>
     </>
   );
 }
