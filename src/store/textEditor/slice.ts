@@ -12,7 +12,10 @@ export const textEditor = createSlice({
   initialState,
   reducers: {
     addValue: (state, action: PayloadAction<EditorValueType>) => {
-      state.values.push(action.payload)
+      const lastValue = state.values[state.values.length - 1];
+      if (JSON.stringify(action.payload) !== JSON.stringify(lastValue)) {
+        state.values.push(action.payload);
+      }
     },
   },
 });
