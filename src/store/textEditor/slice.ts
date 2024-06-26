@@ -19,8 +19,8 @@ export const textEditor = createSlice({
     addValue: (state, action: PayloadAction<EditorValueType>) => {
       const newValue = action.payload;
       const lastValue = state.values[state.values.length - 1];
-      const valuesDifferent = compareEditorValues(newValue, lastValue);
-      if (!valuesDifferent) return; //Nothing to change
+      const valuesEqual = compareEditorValues(newValue, lastValue);
+      if (valuesEqual) return; //Nothing to change
       state.actualIndex++;
       state.values = state.values.slice(0, state.actualIndex);
       state.values.push(newValue);
