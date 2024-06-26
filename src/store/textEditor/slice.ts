@@ -4,7 +4,7 @@ import { EditorValueType, ITextEditorState } from "./types";
 import { initialValue } from "./constants";
 import { compareEditorValues } from "../../utils/compareEditorValues";
 
-const cacheSize = 20; //Maximum cached values
+const cacheSize = 30; //Maximum cached values
 
 // Define the initial state using that type
 const initialState: ITextEditorState = {
