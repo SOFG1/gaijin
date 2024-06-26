@@ -8,4 +8,5 @@ export type EditorValueType = {
 
 export interface ITextEditorState {
     values: EditorValueType[]
+    actualIndex: number
 }

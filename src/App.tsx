@@ -1,15 +1,21 @@
 import { useDispatch, useSelector } from "react-redux";
-import { textEditorValueSelector } from "./store/textEditor/selectors";
-import { addValue } from "./store/textEditor/slice";
+import {
+  textEditorActualIndexSelector,
+  textEditorValuesSelector,
+} from "./store/textEditor/selectors";
+import { addValue, setActualIndex } from "./store/textEditor/slice";
 import { useEffect, useState } from "react";
 import { useDebounce } from "./hooks/useDebounce";
 
 function App() {
   const dispatch = useDispatch();
-  const values = useSelector(textEditorValueSelector);
+  const values = useSelector(textEditorValuesSelector);
+  const actualIndex = useSelector(textEditorActualIndexSelector);
   const [value, setValue] = useState("");
   const [bold, setBold] = useState<boolean>(false);
   const [italic, setItalic] = useState<boolean>(false);
+
+  const currentValue = values[actualIndex];
 
   const setValueDebounced = useDebounce(
     (val: string, b: boolean, i: boolean) => {
@@ -25,13 +31,15 @@ function App() {
     setValueDebounced(val, b, i);
   };
 
-  useEffect(() => {
-    setValue(values[values.length - 1]?.text || "");
-    setItalic(values[values.length - 1]?.italic || false);
-    setBold(values[values.length - 1]?.bold || false);
-  }, [values]);
+  const handleChangeIndex = (index: number) => {
+    dispatch(setActualIndex(index));
+  };
 
-  console.log(values);
+  useEffect(() => {
+    setValue(currentValue?.text || "");
+    setItalic(currentValue?.italic || false);
+    setBold(currentValue?.bold || false);
+  }, [currentValue]);
 
   return (
     <>
@@ -49,8 +57,18 @@ function App() {
           fontWeight: bold ? "bold" : "normal",
         }}
       />
-      <button>Undo</button>
-      <button>Redo</button>
+      <button
+        disabled={actualIndex < 1}
+        onClick={() => handleChangeIndex(actualIndex - 1)}
+      >
+        Undo
+      </button>
+      <button
+        disabled={actualIndex + 1 === values.length}
+        onClick={() => handleChangeIndex(actualIndex + 1)}
+      >
+        Redo
+      </button>
       <button onClick={() => handleChange(value, !bold, italic)}>Bold</button>
       <button onClick={() => handleChange(value, bold, !italic)}>Italic</button>
     </>
